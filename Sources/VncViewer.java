@@ -821,13 +821,18 @@ public class VncViewer extends java.applet.Applet
       rfb.close();
     options.dispose();
     clipboard.dispose();
+    rfbThread = null;
     if (rec != null)
       rec.dispose();
 
     if (inAnApplet) {
       showMessage("Disconnected");
-    } else {
+    }
+    else if (inSeparateFrame) {
       System.exit(0);
+    }
+    else {
+      buttonPanel.disableButtonsOnDisconnect();
     }
   }
 
@@ -843,6 +848,8 @@ public class VncViewer extends java.applet.Applet
       // vncContainer null, applet not inited,
       // can not present the error to the user.
       Thread.currentThread().stop();
+    } else if (!inSeparateFrame) {
+      showConnectionStatus(str);
     } else {
       System.exit(1);
     }
@@ -865,6 +872,8 @@ public class VncViewer extends java.applet.Applet
 
     if (inAnApplet) {
       showMessage(str);
+    } else if (!inSeparateFrame) {
+      showConnectionStatus(str);
     } else {
       System.exit(1);
     }

@@ -1,0 +1,14 @@
+To Do List:
++ Listen for "Quit" event.
+	http://developer.apple.com/documentation/Java/Reference/1.4.2/appledoc/api/com/apple/eawt/ApplicationListener.html
++ Invoke a repaint when maximize button is clicked
++ Hide the Cursor when view only
+	Additionally: Disable Cursor Shape Updates
++ Scale Remote Cursor
++ soloViewer should be like the original vncviewer
+	independent frame
+	no scaling
+	scroll panel
+	AND multiple of them
++ Return a viewer to it's origianl location in main Frame's layout when soloHostClosed
++ Read list of hosts from the commandline (and default port/pw)

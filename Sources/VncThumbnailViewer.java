@@ -31,12 +31,70 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.lang.Math.*;
+import java.net.*;
 
 public class VncThumbnailViewer extends Frame
     implements WindowListener, ComponentListener, ContainerListener, MouseListener, ActionListener  {
   public static void main(String argv[])  {    VncThumbnailViewer t = new VncThumbnailViewer();
 
+    String h = new String("");
+    String pw = new String("");
+    int p = 0;
+    for(int i = 0; i < argv.length; i += 2) {
+      if(argv.length < (i+2) ) {
+        System.out.println("ERROR: No value found for parameter " + argv[i]);
+        break;
+      }
+      String param = argv[i];
+      String value = argv[i+1];
+      if(param.equalsIgnoreCase("host")) {
+        h = value;
+      }
+      if(param.equalsIgnoreCase("hostname")) {
+        try {
+          InetAddress ip = InetAddress.getByName(argv[i+1]);
+          h = ip.getHostAddress();
+        } catch(UnknownHostException e) {
+          h = "0.0.0.0";
+        }
+      }
+      if(param.equalsIgnoreCase("port")) {
+        p = Integer.parseInt(value);
+      }
+      if(param.equalsIgnoreCase("password")) {
+        pw = value;
+      }
+      if(param.equalsIgnoreCase("encpassword")) {
+        pw = readEncPassword(value);
+      }
+
+      if(h != "" && p != 0 && pw != "") {
+        t.launchViewer(h, p, pw);
+        h = "";
+        p = 0;
+        pw = "";
+      }
+    }
+    
     t.showAddHostFrame();
+  }
+  
+  
+  static String readEncPassword(String encPass) {
+    byte[] pw = {0, 0, 0, 0, 0, 0, 0, 0};
+    int len = encPass.length() / 2;
+    if(len > 8) {
+      len = 8;
+    }
+    for(int i = 0; i < len; i++) {
+      String hex = encPass.substring(i*2, i*2+2);
+      Integer x = new Integer(Integer.parseInt(hex, 16));
+      pw[i] = x.byteValue();
+    }
+    byte[] key = {23, 82, 107, 6, 35, 78, 88, 7};
+    DesCipher des = new DesCipher(key);
+    des.decrypt(pw, 0, pw, 0);
+    return new String(pw);
   }
 
 

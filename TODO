@@ -11,4 +11,3 @@ To Do List:
 	scroll panel
 	AND multiple of them
 + Return a viewer to it's origianl location in main Frame's layout when soloHostClosed
-+ Read list of hosts from the commandline (and default port/pw)

@@ -1,9 +1,17 @@
-This is verion 1.0 of the ThumbnailViewer.  It is based on/uses tightvnc's java viewer v.1.3.9
+This is verion 1.1 of the ThumbnailViewer.  It is based on/uses tightvnc's java viewer v.1.3.9
 
 
 You can execute the ThumbnailViewer by running:
      java -classpath ThumbnailViewer.jar ThumbnailViewer
 
+You can specify servers to connect to on the commandline:
+     java -classpath ThumbnailViewer.jar ThumbnailViewer HOST 192.168.0.106 PORT 5900 PASSWORD pa$s HOST 192.168.0.107 PORT 5900 PASSWORD p@ss
+
+You can use "hostname" instead of "host" on the commandline to specify a hostname instead of an IP address.
+     java -classpath ThumbnailViewer.jar ThumbnailViewer HOSTNAME labpc-01.school.edu PORT 5900 PASSWORD pa$s
+
+You can use "encpassword" instead of "password" on the commandline to specify a vnc encrypted password instead of plaintext.
+     java -classpath ThumbnailViewer.jar ThumbnailViewer HOST 192.168.0.106 PORT 5900 ENCPASSWORD 40CCA9718FFB8E91
 
 I suggest increasing the Java Heap Size when running this.  You can do this by adding the following commandline option:
      -Xmx128m

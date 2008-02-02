@@ -1,4 +1,7 @@
 To Do List:
+
+! When I try to connect to a non VNC computer, the program gives me a net error and leaves the space in blank. This is ok, but i can’t remove this space.
+
 + Listen for "Quit" event.
 	http://developer.apple.com/documentation/Java/Reference/1.4.2/appledoc/api/com/apple/eawt/ApplicationListener.html
 + Invoke a repaint when maximize button is clicked
@@ -11,3 +14,7 @@ To Do List:
 	scroll panel
 	AND multiple of them
 + Return a viewer to it's origianl location in main Frame's layout when soloHostClosed
+
+
++ Remove use of VncViewer, instead create new class called VncThumbnail
++ New GUI (more like apple's remote desktop)

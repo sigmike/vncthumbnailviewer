@@ -50,14 +50,14 @@ public class VncThumbnailViewer extends Frame
       if(param.equalsIgnoreCase("host")) {
         h = value;
       }
-      if(param.equalsIgnoreCase("hostname")) {
-        try {
-          InetAddress ip = InetAddress.getByName(argv[i+1]);
-          h = ip.getHostAddress();
-        } catch(UnknownHostException e) {
-          h = "0.0.0.0";
-        }
-      }
+//      if(param.equalsIgnoreCase("hostname")) {
+//        try {
+//          InetAddress ip = InetAddress.getByName(argv[i+1]);
+//          h = ip.getHostAddress();
+//        } catch(UnknownHostException e) {
+//          h = "0.0.0.0";
+//        }
+//      }
       if(param.equalsIgnoreCase("port")) {
         p = Integer.parseInt(value);
       }
@@ -108,14 +108,15 @@ public class VncThumbnailViewer extends Frame
     widthPerThumbnail = 0;
     heightPerThumbnail = 0;
 
-    setTitle("DJC's Thumbnail Viewer");
+    setTitle("DJC Thumbnail Viewer");
     addWindowListener(this);
     addComponentListener(this);
     addMouseListener(this);
 
     GridLayout grid = new GridLayout();
     setLayout(grid);
-    setSize(200, 200);
+    //setSize(200, 200);
+    setSize(Toolkit.getDefaultToolkit().getScreenSize());
     setVisible(true);
 
     soloViewer = new Frame();
@@ -137,7 +138,7 @@ public class VncThumbnailViewer extends Frame
     f.setSize(250, 150);
     f.setResizable(false);
     Panel panel = new Panel(new GridLayout(4,2));
-    hostTextField = new TextField("192.168.0.106", 20);
+    hostTextField = new TextField("", 20);
     portTextField = new TextField("5900", 20);
     pwTextField = new TextField("", 20);
     pwTextField.setEchoChar('*');

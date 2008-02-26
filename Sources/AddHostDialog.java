@@ -72,11 +72,11 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
     
     setFont(new Font("Helvetica", Font.PLAIN, 14));
     
-    hostField = new TextField("", 10);
+    hostField = new TextField("192.168.0.100", 10);
     portField = new TextField("5900", 10);
-    usernameField = new TextField("", 10);
+    usernameField = new TextField("vncuser", 10);
     usernameField.enable(false); // not needed by default
-    passwordField = new TextField("", 10);
+    passwordField = new TextField("vnc", 10);
     passwordField.setEchoChar('*');
     passwordField.enable(false); // not needed by default
 
@@ -135,7 +135,7 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
       pass = readEncPassword(pass);
     }    
     
-    tnviewer.launchViewer(host, port, user, pass);
+    tnviewer.launchViewer(host, port, pass, user);
   }
   
 
@@ -152,19 +152,21 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
   public void itemStateChanged(ItemEvent e) {
     if(authChoice.getSelectedItem() == "(none)") {
       passwordField.enable(false);
+    } else {
+      passwordField.enable(true);
     }
-    if(authChoice.getSelectedItem() != "MS-Logon") {
-      hostField.enable(true); // FIX-ME: remove when MS-Logon is added
-      portField.enable(true); // FIX-ME: remove when MS-Logon is added
-      passwordField.enable(true); // FIX-ME: remove when MS-Logon is added
-      usernameField.enable(false);
-    }
+
     if(authChoice.getSelectedItem() == "MS-Logon") {
       usernameField.enable(true);
       usernameField.enable(false); // FIX-ME: remove when MS-Logon is added
       hostField.enable(false); // FIX-ME: remove when MS-Logon is added
       portField.enable(false); // FIX-ME: remove when MS-Logon is added
       passwordField.enable(false); // FIX-ME: remove when MS-Logon is added
+    } else {
+      usernameField.enable(false);
+      hostField.enable(true); // FIX-ME: remove when MS-Logon is added
+      portField.enable(true); // FIX-ME: remove when MS-Logon is added
+      passwordField.enable(true); // FIX-ME: remove when MS-Logon is added
     }
   }
   

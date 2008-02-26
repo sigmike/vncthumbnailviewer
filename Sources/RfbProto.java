@@ -1,4 +1,8 @@
 //
+//  Copyright (C) 2008 David Czechowski.  All Rights Reserved.
+//  Copyright (C) 2002-2005 Ultr@VNC Team.  All Rights Reserved.
+//  Copyright (C) 2004 Kenn Min Chong, John Witchel.  All Rights Reserved.
+//  Copyright (C) 2004 Alban Chazot.  All Rights Reserved.
 //  Copyright (C) 2001-2004 HorizonLive.com, Inc.  All Rights Reserved.
 //  Copyright (C) 2001-2006 Constantin Kaplinsky.  All Rights Reserved.
 //  Copyright (C) 2000 Tridia Corporation.  All Rights Reserved.
@@ -41,6 +45,7 @@ class RfbProto {
   final static String
     StandardVendor  = "STDV",
     TridiaVncVendor = "TRDV",
+    UltraVncVendor  = "UVNC", // MS-Logon
     TightVncVendor  = "TGHT";
 
   // Security types
@@ -48,7 +53,8 @@ class RfbProto {
     SecTypeInvalid = 0,
     SecTypeNone    = 1,
     SecTypeVncAuth = 2,
-    SecTypeTight   = 16;
+    SecTypeTight   = 16,
+    SecTypeMsLogon = -6; // MS-Logon
 
   // Supported tunneling types
   final static int
@@ -60,10 +66,12 @@ class RfbProto {
   final static int
     AuthNone      = 1,
     AuthVNC       = 2,
+    AuthMSL       = -6, // MS-Logon
     AuthUnixLogin = 129;
   final static String
     SigAuthNone      = "NOAUTH__",
     SigAuthVNC       = "VNCAUTH_",
+    SigAuthMSLogon   = "MSLOGON_", // MS-Logon
     SigAuthUnixLogin = "ULGNAUTH";
 
   // VNC authentication results
@@ -321,6 +329,7 @@ class RfbProto {
       return SecTypeInvalid;	// should never be executed
     case SecTypeNone:
     case SecTypeVncAuth:
+    case SecTypeMsLogon: // MS-Logon
       return secType;
     default:
       throw new Exception("Unknown security type from RFB server: " + secType);
@@ -354,7 +363,8 @@ class RfbProto {
 
     // Find first supported security type.
     for (int i = 0; i < nSecTypes; i++) {
-      if (secTypes[i] == SecTypeNone || secTypes[i] == SecTypeVncAuth) {
+      //if (secTypes[i] == SecTypeNone || secTypes[i] == SecTypeVncAuth) { // MS-Logon
+      if (secTypes[i] == SecTypeNone || secTypes[i] == SecTypeVncAuth || secTypes[i] == SecTypeMsLogon) { // MS-Logon
 	secType = secTypes[i];
 	break;
       }
@@ -408,6 +418,128 @@ class RfbProto {
   }
 
   //
+  // Perform hybrid VNC Authentication with MS challenge.
+  //
+
+  void authenticateMSLogonI(String pw, String us) throws Exception { // Begin MS-Logon I
+    byte[] user = new byte[256];
+    byte[] domain = new byte[256];
+    byte[] passwd = new byte[256];
+    byte[] challengems = new byte[64];
+    byte[] challengevnc = new byte[16];
+
+    // copy the us (user) parameter into the user Byte formated variable 
+    System.arraycopy(us.getBytes(), 0, user, 0, us.length() );
+    // and pad it with Null
+    if(us.length() < 256) {
+      for(int i=us.length(); i<256; i++) { user[i]= 0; }
+    }
+
+	String dm = "."; // FIX-ME: need to get the domain
+    // copy the dm (domain) parameter into the domain Byte formated variable 
+    System.arraycopy(dm.getBytes(), 0, domain, 0, dm.length() );
+	// and pad it with Null
+	if(dm.length() < 256) {
+      for (int i=dm.length(); i<256; i++){ domain[i]= 0; }
+    }
+
+    // copy the pw (password) parameter into the password Byte formated variable 
+    System.arraycopy(pw.getBytes(), 0, passwd, 0, pw.length() );
+    // and pad it with Null
+    if(pw.length() < 32) {
+      for (int i=pw.length(); i<32; i++){ passwd[i]= 0; }
+    }
+
+    // Encrypt the full given password
+    byte[] fixedkey = {23, 82, 107, 6, 35, 78, 88, 7};
+    DesCipher desme = new DesCipher(fixedkey);
+    desme.encrypt(passwd, 0, passwd, 0);
+
+    // get the mslogon Challenge from server
+    is.readFully(challengems);
+
+    // get the vnc Challenge from server
+    is.readFully(challengevnc);
+
+    if(pw.length() > 8) {
+      pw = pw.substring(0, 8); // Truncate to 8 chars
+    }
+
+    // vncEncryptBytes in the UNIX libvncauth truncates password
+    // after the first zero byte. We do too
+    int firstZero = pw.indexOf(0);
+    if(firstZero != -1) {
+	  pw = pw.substring(0, firstZero);
+    }
+
+    for(int i= 0; i<32; i++) {
+      challengems[i]= (byte) (passwd[i]^challengems[i]);
+    }
+    
+    os.write(user);
+    os.write(domain);
+    os.write(challengems);
+
+    byte[] key = {0, 0, 0, 0, 0, 0, 0, 0};
+    System.arraycopy(pw.getBytes(), 0, key, 0, pw.length());
+
+    DesCipher des = new DesCipher(key);
+
+    des.encrypt(challengevnc, 0, challengevnc, 0);
+    des.encrypt(challengevnc, 8, challengevnc, 8);
+     
+    os.write(challengevnc);
+		
+    readSecurityResult("VNC+MS authentication");
+  } // End MS-Logon I
+
+  //
+  // Perform Ultr@VNC's MS-Logon Authentication.
+  //
+
+  void authenticateMSLogon(String pw, String us) throws Exception { // MS-Logon II
+    byte user[] = new byte[256];
+    byte passwd[] = new byte[64];
+
+    long gen  = is.readLong();
+    long mod  = is.readLong();
+    long resp = is.readLong();
+
+    DiffieHellman dh = new DiffieHellman(gen, mod);
+    long pub = dh.createInterKey();
+
+    os.write(DiffieHellman.longToBytes(pub));
+
+    long key = dh.createEncryptionKey(resp);
+    //System.out.println("gen=" + gen + ", mod=" + mod + ", pub=" + pub + ", key=" + key);
+
+    DesCipher des = new DesCipher(DiffieHellman.longToBytes(key));
+
+    System.arraycopy(us.getBytes(), 0, user, 0, us.length() );
+    // and pad it with Null
+    if (us.length() < 256) {
+      for (int i=us.length(); i<256; i++){ user[i]= 0; }
+    }
+
+    // copy the pw (password) parameter into the password Byte formated variable 
+    System.arraycopy(pw.getBytes(), 0, passwd, 0, pw.length() );
+    // and pad it with Null
+    if(pw.length() < 32) {
+      for(int i=pw.length(); i<32; i++) { passwd[i]= 0; }
+    }
+
+    //user = domain + "\\" + user; // FIX-ME: how is this used??
+
+    des.encryptText(user, user, DiffieHellman.longToBytes(key));
+    des.encryptText(passwd, passwd, DiffieHellman.longToBytes(key));
+
+    os.write(user);
+    os.write(passwd);
+
+    readSecurityResult("MS-Logon authentication");
+  } // end of MS-Logon II
+
+  //
   // Read security result.
   // Throws an exception on authentication failure.
   //
@@ -458,6 +590,8 @@ class RfbProto {
 		 "No authentication");
     authCaps.add(AuthVNC, StandardVendor, SigAuthVNC,
 		 "Standard VNC password authentication");
+    authCaps.add(AuthMSL, UltraVncVendor, SigAuthMSLogon, // MS-Logon
+		 "MS-Logon authentication"); // MS-Logon
 
     // Supported encoding types
     encodingCaps.add(EncodingCopyRect, StandardVendor,
@@ -518,7 +652,7 @@ class RfbProto {
     readCapabilityList(authCaps, nAuthTypes);
     for (int i = 0; i < authCaps.numEnabled(); i++) {
       int authType = authCaps.getByOrder(i);
-      if (authType == AuthNone || authType == AuthVNC) {
+      if (authType == AuthNone || authType == AuthVNC || authType == AuthMSL) { // MS-Logon
 	writeInt(authType);
 	return authType;
       }

@@ -80,6 +80,7 @@ public class VncViewer extends java.applet.Applet
   String host;
   int port;
   String passwordParam;
+  String usernameParam; // MS-Logon
   boolean showControls;
   boolean offerRelogin;
   boolean showOfflineDesktop;
@@ -349,13 +350,28 @@ public class VncViewer extends java.applet.Applet
       break;
     case RfbProto.AuthVNC:
       showConnectionStatus("Performing standard VNC authentication");
-      if (passwordParam != null) {
-        rfb.authenticateVNC(passwordParam);
-      } else {
-        String pw = askPassword();
-        rfb.authenticateVNC(pw);
+      String pw = passwordParam;
+      if(pw == null) {
+        pw = askPassword();
       }
+      if(rfb.serverMinor == 4) { // MS-Logon
+        showConnectionStatus("Performing standard VNC authentication... with Ultr@VNC MS-Logon I"); // MS-Logon
+        String us = usernameParam; // MS-Logon
+        if(us == null) { // MS-Logon
+          throw new Exception("Username not specified, could not complete logon"); // MS-Logon
+        } // MS-Logon
+        rfb.authenticateMSLogonI(pw, us); // MS-Logon
+      } else // MS-Logon
+      rfb.authenticateVNC(pw);
       break;
+    case RfbProto.AuthMSL: // MS-Logon
+      showConnectionStatus("Performing MS-Logon authentication"); // MS-Logon
+      if (passwordParam != null && usernameParam != null) { // MS-Logon
+        rfb.authenticateMSLogon(passwordParam, usernameParam); // MS-Logon
+      } else { // MS-Logon
+        throw new Exception("Username or Password not specified, could not complete MS-Logon"); // MS-Logon
+      } // MS-Logon
+      break; // MS-Logon
     default:
       throw new Exception("Unknown authentication scheme " + authType);
     }
@@ -697,6 +713,9 @@ public class VncViewer extends java.applet.Applet
 
     // Read "ENCPASSWORD" or "PASSWORD" parameter if specified.
     readPasswordParameters();
+    
+    // Read "USERNAME" parameter if specified for MS-Logon
+    usernameParam = readParameter("USERNAME", false); // MS-Logon
 
     if (inAnApplet) {
       str = readParameter("Open New Window", false);

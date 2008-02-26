@@ -158,15 +158,8 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
 
     if(authChoice.getSelectedItem() == "MS-Logon") {
       usernameField.enable(true);
-      usernameField.enable(false); // FIX-ME: remove when MS-Logon is added
-      hostField.enable(false); // FIX-ME: remove when MS-Logon is added
-      portField.enable(false); // FIX-ME: remove when MS-Logon is added
-      passwordField.enable(false); // FIX-ME: remove when MS-Logon is added
     } else {
       usernameField.enable(false);
-      hostField.enable(true); // FIX-ME: remove when MS-Logon is added
-      portField.enable(true); // FIX-ME: remove when MS-Logon is added
-      passwordField.enable(true); // FIX-ME: remove when MS-Logon is added
     }
   }
   

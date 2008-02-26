@@ -69,7 +69,7 @@ public class VncThumbnailViewer extends Frame
       }
 
       if(h != "" && p != 0 && pw != "") {
-        t.launchViewer(h, p, pw);
+        t.launchViewer(h, p, pw, null);
         h = "";
         p = 0;
         pw = "";
@@ -111,23 +111,20 @@ public class VncThumbnailViewer extends Frame
   }
 
 
-  // Stub for MS-Logon authentication
-  public void launchViewer(String host, int port, String username, String password) {
-    
-    // FIX-ME: nothing done with username
-
-    launchViewer(host, port, password);
-  }
-
-
-  public void launchViewer(String host, int port, String password) {
-    String args[] = new String[6];
+  public void launchViewer(String host, int port, String password, String user) {
+  //public void launchViewer(String host, int port, String password) { // MS-Logon
+    String args[] = new String[8]; // FIX-ME: can this be longer (8) than it should be (6)?
     args[0] = "host";
     args[1] = host;
     args[2] = "port";
     args[3] = Integer.toString(port);
     args[4] = "password";
     args[5] = password;
+    
+    if(user != null) {
+      args[6] = "username";
+      args[7] = user;
+    }
 
     // launch a new viewer
     VncViewer v = new VncViewer();

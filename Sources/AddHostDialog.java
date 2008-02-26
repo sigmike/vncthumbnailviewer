@@ -26,7 +26,11 @@ import java.awt.event.*;
 
 class AddHostDialog extends Dialog implements ActionListener, ItemListener {
 
-  static String readEncPassword(String encPass) {
+  static String readEncPassword(String encPass) throws Exception {
+    if(encPass.lentgh() != 16) {
+      throw new Exception("VNC Enc. Passwords must be 16 chars");
+    }
+    
     byte[] pw = {0, 0, 0, 0, 0, 0, 0, 0};
     int len = encPass.length() / 2;
     if(len > 8) {
@@ -72,11 +76,11 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
     
     setFont(new Font("Helvetica", Font.PLAIN, 14));
     
-    hostField = new TextField("192.168.0.100", 10);
+    hostField = new TextField("", 10);
     portField = new TextField("5900", 10);
-    usernameField = new TextField("vncuser", 10);
+    usernameField = new TextField("", 10);
     usernameField.enable(false); // not needed by default
-    passwordField = new TextField("vnc", 10);
+    passwordField = new TextField("", 10);
     passwordField.setEchoChar('*');
     passwordField.enable(false); // not needed by default
 
@@ -132,6 +136,7 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
 
     // Encrypted Password:
     if(authChoice.getSelectedItem() == "VNC Enc. Password") {
+      // FIX-ME: check to make sure the text entered is exactly 16 characters
       pass = readEncPassword(pass);
     }    
     

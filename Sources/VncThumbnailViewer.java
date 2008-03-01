@@ -69,7 +69,7 @@ public class VncThumbnailViewer extends Frame
       }
 
       if(h != "" && p != 0 && pw != "") {
-        t.launchViewer(h, p, pw, null);
+        t.launchViewer(h, p, pw, "");
         h = "";
         p = 0;
         pw = "";

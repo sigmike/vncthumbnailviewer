@@ -1,7 +1,6 @@
 //
 //  Copyright (C) 2008 David Czechowski.  All Rights Reserved.
 //  Copyright (C) 2002-2005 Ultr@VNC Team.  All Rights Reserved.
-//  Copyright (C) 2004 Kenn Min Chong, John Witchel.  All Rights Reserved.
 //  Copyright (C) 2004 Alban Chazot.  All Rights Reserved.
 //  Copyright (C) 2001-2004 HorizonLive.com, Inc.  All Rights Reserved.
 //  Copyright (C) 2001-2006 Constantin Kaplinsky.  All Rights Reserved.

@@ -1,6 +1,9 @@
 To Do List:
 
 ! When I try to connect to a non VNC computer, the program gives me a net error and leaves the space in blank. This is ok, but i can’t remove this space.
+! Host's clipboard is being transferred to the multiple computers
+! Double clicking in the "solohost" frame tries to re-solohost it
+
 
 + Listen for "Quit" event.
 	http://developer.apple.com/documentation/Java/Reference/1.4.2/appledoc/api/com/apple/eawt/ApplicationListener.html
@@ -18,3 +21,4 @@ To Do List:
 
 + Remove use of VncViewer, instead create new class called VncThumbnail
 + New GUI (more like apple's remote desktop)
+

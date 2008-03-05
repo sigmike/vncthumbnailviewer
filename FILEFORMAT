@@ -1,0 +1,55 @@
+// Copyright (c) 2008 David Czechowski. All Rights Reserved.
+
+
+EXAMPLE:
+  <?xml version="1.0" standalone="yes"?>
+  <Manifiest Version="1.4" Encrypted="0">
+    <Connection Host="192.168.0.100" Port="5900" SecType="1"/>
+    <Connection Host="192.168.0.102" Password="p@ssw0rd" Username="admin" Port="5900" SecType="-6"/>
+    <Connection Host="xserve1" Password="dr0w$$ap" Port="5806" SecType="2"/>
+  </Manifiest>
+
+
+TAG: Manifest
+    Children: Connection, Layout
+    Attribute: Encrypted -  0 or 1 for false or true (if none, assume 0/false)
+    Attribute: Version -  Version number of the program 1.4 creating this file
+
+TAG: Connection
+    Children: (none)
+    Attribute: Host - ip address or hostname of vnc server (string)
+    Attribute: Port - port number on server (int)
+    Attribute: SecType - rfb protocol security type (int)
+                          0 - invalid
+                          1 - none
+                          2 - vnc authentication
+                          5 - ra2
+                          6 - ra2ne
+                          16 - tight
+                          17 - ultra
+                          18 - tls
+                          19 - vencrypt
+                          -6 - ms-logon
+    Attribute**: Password - password;  not needed when SecType=1 (string)
+    Attribute**: Username - username; only needed for ms-logon security (string)
+    Attribute**: UserDomain - username ms domain; only needed for ms-logon security (string)
+    Attribute**: CompName - users settable name for the connection (string)
+    Attribute**: Comment - users settable text for the connection (string)
+
+
+ENCRYPTION:
+    The attributes with ** are encrypted with the DES Cipher encryption algorithm already included with VNC.  Unlike the VNC encryption, a fixed key is NOT used.  When encryption is used, a password will be used as the key to encrypt the private attribute fields.
+
+
+WHY XML:
+    "(C)onfiguration files don’t stay simple for long. Using XML means that we can stand a chance of managing the growth in complexity of the configuration system over time." (The Wilson Project, http://www.wilson.co.uk/Software/vnc/VncMonitor.htm)
+
+
+BACKGROUND:
+    This file format is based on The Wilson Project's VNC Monitor.  This expands on it by adding tags and attributes, but their configuration files are still compatible and can be used by VncThumbnailMonitor.
+
+
+COMPATABILITY:
+    VNCon - maybe xml parsable if the tag VNCon is detected, then parse the remaing #PCDATA
+    index.vnc - html file, could be parsed as XML
+    RealVNC's Save Files - none yet

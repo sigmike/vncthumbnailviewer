@@ -184,6 +184,7 @@ public class VncThumbnailViewer extends Frame
     soloViewer.setTitle(v.host);
     this.remove(v);
     soloViewer.add(v);
+    v.vc.removeMouseListener(this);
     this.validate();
     soloViewer.validate();
 
@@ -200,6 +201,7 @@ public class VncThumbnailViewer extends Frame
     updateCanvasScaling(v, widthPerThumbnail, heightPerThumbnail);
     soloViewer.removeAll();
     addViewer(v);
+    v.vc.addMouseListener(this);
     soloViewer.setVisible(false);
   }
 

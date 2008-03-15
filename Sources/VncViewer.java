@@ -354,15 +354,17 @@ public class VncViewer extends java.applet.Applet
       if(pw == null) {
         pw = askPassword();
       }
-      if(rfb.serverMinor == 4) { // MS-Logon
-        showConnectionStatus("Performing standard VNC authentication... with Ultr@VNC MS-Logon I"); // MS-Logon
+      if(rfb.serverMinor == 4 && rfb.clientMinor == 4) { // MS-Logon
+        showConnectionStatus("Performing VNC authentication... with Ultr@VNC MS-Logon I"); // MS-Logon
         String us = usernameParam; // MS-Logon
         if(us == null) { // MS-Logon
           throw new Exception("Username not specified, could not complete logon"); // MS-Logon
         } // MS-Logon
         rfb.authenticateMSLogonI(pw, us); // MS-Logon
-      } else // MS-Logon
-      rfb.authenticateVNC(pw);
+      } // MS-Logon
+      else // MS-Logon
+        rfb.authenticateVNC(pw);
+
       break;
     case RfbProto.AuthMSL: // MS-Logon
       showConnectionStatus("Performing MS-Logon authentication"); // MS-Logon
@@ -392,7 +394,7 @@ public class VncViewer extends java.applet.Applet
       return;
     }
 
-    System.out.println(msg);
+    System.out.println(host + " Status: " + msg); // DJC
 
     if (connStatusLabel == null) {
       connStatusLabel = new Label("Status: " + msg);

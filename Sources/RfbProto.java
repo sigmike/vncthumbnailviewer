@@ -37,6 +37,7 @@ class RfbProto {
 
   final static String
     versionMsg_3_3 = "RFB 003.003\n",
+    versionMsg_3_4 = "RFB 003.004\n", // MS-Logon
     versionMsg_3_7 = "RFB 003.007\n",
     versionMsg_3_8 = "RFB 003.008\n";
 
@@ -298,6 +299,9 @@ class RfbProto {
     } else if (serverMinor >= 7) {
       clientMinor = 7;
       os.write(versionMsg_3_7.getBytes());
+//    } else if (serverMinor >= 4) { // MS-Logon
+//      clientMinor = 4; // MS-Logon
+//      os.write(versionMsg_3_4.getBytes()); // MS-Logon
     } else {
       clientMinor = 3;
       os.write(versionMsg_3_3.getBytes());
@@ -510,7 +514,7 @@ class RfbProto {
     os.write(DiffieHellman.longToBytes(pub));
 
     long key = dh.createEncryptionKey(resp);
-    //System.out.println("gen=" + gen + ", mod=" + mod + ", pub=" + pub + ", key=" + key);
+System.out.println("gen=" + gen + ", mod=" + mod + ", pub=" + pub + ", key=" + key);
 
     DesCipher des = new DesCipher(DiffieHellman.longToBytes(key));
 

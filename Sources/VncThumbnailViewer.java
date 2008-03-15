@@ -39,7 +39,9 @@ public class VncThumbnailViewer extends Frame
 
     String h = new String("");
     String pw = new String("");
+    String us = new String("");
     int p = 0;
+
     for(int i = 0; i < argv.length; i += 2) {
       if(argv.length < (i+2) ) {
         System.out.println("ERROR: No value found for parameter " + argv[i]);
@@ -50,34 +52,37 @@ public class VncThumbnailViewer extends Frame
       if(param.equalsIgnoreCase("host")) {
         h = value;
       }
-//      if(param.equalsIgnoreCase("hostname")) {
-//        try {
-//          InetAddress ip = InetAddress.getByName(argv[i+1]);
-//          h = ip.getHostAddress();
-//        } catch(UnknownHostException e) {
-//          h = "0.0.0.0";
-//        }
-//      }
       if(param.equalsIgnoreCase("port")) {
         p = Integer.parseInt(value);
       }
       if(param.equalsIgnoreCase("password")) {
         pw = value;
       }
+      if(param.equalsIgnoreCase("username")) {
+        us = value;
+      }
       if(param.equalsIgnoreCase("encpassword")) {
         pw = AddHostDialog.readEncPassword(value);
       }
-
-      if(h != "" && p != 0 && pw != "") {
-        t.launchViewer(h, p, pw, "");
-        h = "";
-        p = 0;
-        pw = "";
+      
+      if(i+2 >= argv.length || argv[i+2].equalsIgnoreCase("host")) {
+        //if this is the last parameter, or if the next parameter is a next host...
+        if(h != "" && p != 0) {
+          System.out.println("Command-line: host " + h + " port " + p);
+          t.launchViewer(h, p, pw, us);
+          h = "";
+          p = 0;
+          pw = "";
+          us = "";
+        } else {
+          System.out.println("ERROR: No port specified for last host (" + h + ")");
+        }
       }
     }
     
   }
   
+  final static float VERSION = 1.39f;
   
   AbstractList viewersList;
   AddHostDialog hostDialog;
@@ -104,29 +109,48 @@ public class VncThumbnailViewer extends Frame
     setMenuBar(new MenuBar());    getMenuBar().add( createFileMenu() );
 
     soloViewer = new Frame();
-    soloViewer.setSize(200,200);
+    soloViewer.setSize(Toolkit.getDefaultToolkit().getScreenSize());
     soloViewer.addWindowListener(this);
     soloViewer.addComponentListener(this);
     soloViewer.validate();
   }
 
 
-  public void launchViewer(String host, int port, String password, String user) {
-  //public void launchViewer(String host, int port, String password) { // MS-Logon
-    String args[] = new String[8]; // FIX-ME: can this be longer (8) than it should be (6)?
+  public void launchViewer(String host, int port, String password) {
+    launchViewer(host, port, password, ""); // MS-Logon
+  } // MS-Logon
+  
+  public void launchViewer(String host, int port, String password, String user) { // MS-Logon
+    launchViewer(host, port, password, user, ""); // MS-Logon
+  } // MS-Logon
+
+  public void launchViewer(String host, int port, String password, String user, String userdomain) { // MS-Logon
+    String args[] = new String[4];
     args[0] = "host";
     args[1] = host;
     args[2] = "port";
     args[3] = Integer.toString(port);
-    args[4] = "password";
-    args[5] = password;
-    
-    if(user != null) {
-      args[6] = "username";
-      args[7] = user;
+
+    if(password != null && password.length() != 0) {
+      int newlen = args.length + 2;
+      String[] newargs = new String[newlen];
+      System.arraycopy(args, 0, newargs, 0, newlen-2);
+      newargs[newlen-2] = "password";
+      newargs[newlen-1] = password;
+      args = newargs;
+    }
+
+    if(user != null && user.length() != 0) { // MS-Logon
+      int newlen = args.length + 2; // MS-Logon
+      String[] newargs = new String[newlen]; // MS-Logon
+      System.arraycopy(args, 0, newargs, 0, newlen-2); // MS-Logon
+      newargs[newlen-2] = "username"; // MS-Logon
+      newargs[newlen-1] = user; // MS-Logon
+      args = newargs; // MS-Logon
     }
 
     // launch a new viewer
+    System.out.println("Launch Host: " + host + ":" + port);
     VncViewer v = new VncViewer();
     v.mainArgs = args;
     v.inAnApplet = false;
@@ -250,7 +274,8 @@ public class VncThumbnailViewer extends Frame
     }
 
   }
-
+  
+  
   private void quit() {
     // Called by either File->Exit or Closing of the main window
     System.out.println("Closing window");
@@ -276,7 +301,8 @@ public class VncThumbnailViewer extends Frame
     savehostsMenuItem.addActionListener(this);
     exitMenuItem.addActionListener(this);
     
-    fileMenu.add(newhostMenuItem);    fileMenu.add(loadhostsMenuItem);    fileMenu.add(savehostsMenuItem);    fileMenu.addSeparator();
+    fileMenu.add(newhostMenuItem);    fileMenu.addSeparator();
+    fileMenu.add(loadhostsMenuItem);    fileMenu.add(savehostsMenuItem);    fileMenu.addSeparator();
     fileMenu.add(exitMenuItem);
     
     loadhostsMenuItem.enable(false); // FIX-ME: remove when feature is added
@@ -371,8 +397,10 @@ public class VncThumbnailViewer extends Frame
       hostDialog = new AddHostDialog(this);
     }
     if(evt.getSource() == savehostsMenuItem) {
+//      loadsaveHosts(FileDialog.SAVE); // FIX-ME: include when feature is added
     }
     if(evt.getSource() == loadhostsMenuItem) {
+//      loadsaveHosts(FileDialog.LOAD); // FIX-ME: include when feature is added
     }
     if(evt.getSource() == exitMenuItem) {
       quit();

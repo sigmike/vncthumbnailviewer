@@ -1,8 +1,7 @@
 To Do List:
 
 ! When I try to connect to a non VNC computer, the program gives me a net error and leaves the space in blank. This is ok, but i can’t remove this space.
-! Host's clipboard is being transferred to the multiple computers
-! Double clicking in the "solohost" frame tries to re-solohost it
+! Host's clipboard is being transferred to the multiple computers??
 
 
 + Listen for "Quit" event.
@@ -19,6 +18,9 @@ To Do List:
 + Return a viewer to it's origianl location in main Frame's layout when soloHostClosed
 
 
-+ Remove use of VncViewer, instead create new class called VncThumbnail
++ Load/Save lists of connection
+
+
++ Remove use of VncViewer, instead create new class called VncViewerThumbnail (VncViewerTN)
 + New GUI (more like apple's remote desktop)
 

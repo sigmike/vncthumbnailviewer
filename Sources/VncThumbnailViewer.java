@@ -82,7 +82,7 @@ public class VncThumbnailViewer extends Frame
     
   }
   
-  final static float VERSION = 1.39f;
+  final static float VERSION = 1.31f;
   
   AbstractList viewersList;
   AddHostDialog hostDialog;

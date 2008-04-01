@@ -71,7 +71,6 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
     this.tnviewer = tnviewer;
     
     // GUI Stuff:
-    setSize(250, 175);
     setResizable(false);
     GridBagLayout gridbag = new GridBagLayout();
     GridBagConstraints c = new GridBagConstraints();
@@ -121,7 +120,12 @@ class AddHostDialog extends Dialog implements ActionListener, ItemListener {
     add(cancelButton);
     add(connectButton);
     
-    //add(panel);
+    Point loc = tnviewer.getLocation();
+    Dimension dim = tnviewer.getSize();
+    loc.x += (dim.width/2)-50;
+    loc.y += (dim.height/2)-50;
+    setLocation(loc);
+    pack();
     validate();
     setVisible(true);
   }

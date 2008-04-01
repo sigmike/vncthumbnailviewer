@@ -21,6 +21,7 @@ import java.awt.*;
 import java.io.*;
 import net.n3.nanoxml.*; // Source available at http://nanoxml.cyberelf.be/
 import java.util.*;
+import java.net.*;//TEMP
 
 //
 // This Vector-based List is used to maintain of a list of VncViewers
@@ -47,7 +48,9 @@ class VncViewersList extends Vector {
     boolean encrypted = false;
     
     try {
-
+      File file = new File(filename);      URL url = file.toURL();
+      filename = url.getPath();
+            
       IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
       IXMLReader reader = StdXMLReader.fileReader(filename);
       parser.setReader(reader);
@@ -61,7 +64,7 @@ class VncViewersList extends Vector {
       }
 
     } catch (Exception e) {      System.out.println("Error testing file for encryption.");
-      //encrypted = false;
+      System.out.println(e.getMessage());
     }
     
     return encrypted;
@@ -70,6 +73,8 @@ class VncViewersList extends Vector {
 
   public void loadHosts(String filename, String encPassword) {
     try {
+      File file = new File(filename);      URL url = file.toURL();
+      filename = url.getPath();
 
       IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
       IXMLReader reader = StdXMLReader.fileReader(filename);
@@ -176,9 +181,12 @@ class VncViewersList extends Vector {
       // Launch the Viewer:
       System.out.println("LOAD Host: " + host + " Port: " + port + " SecType: " + secType);
       if(success) {
-        VncViewer v = launchViewer(host, port, password, username, userdomain);
-        //v.setCompName(compname);
-        //v.setComment(comment);
+        if(getViewer(host, port) == null) {
+          VncViewer v = launchViewer(host, port, password, username, userdomain);
+          //v.setCompName(compname);
+          //v.setComment(comment);
+        }
+        // else - the host is already open
       }
     }
 
@@ -253,7 +261,7 @@ class VncViewersList extends Vector {
     try {
       PrintWriter o = new PrintWriter( new FileOutputStream(filename) );
       XMLWriter writer = new XMLWriter(o);
-      o.print("<?xml version=\"1.0\" standalone=\"yes\"?>\n");      writer.write(manifest, true);
+      o.println("<?xml version=\"1.0\" standalone=\"yes\"?>");      writer.write(manifest, true);
       
     } catch (IOException e) {
       System.out.print("Error saving file.\n" + e.getMessage() );
@@ -323,6 +331,20 @@ class VncViewersList extends Vector {
     return v;
   }
 
+
+  public VncViewer getViewer(String hostname, int port) {
+    VncViewer v = null;
+
+    ListIterator l = listIterator();
+    while(l.hasNext()) {
+      v = (VncViewer)l.next();
+      if(v.host == hostname && v.port == port) {
+        return v;
+      }
+    }
+
+    return null;
+  }
 
   public VncViewer getViewer(Container c) {
     VncViewer v = null;

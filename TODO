@@ -4,6 +4,9 @@ To Do List:
 ! Host's clipboard is being transferred to the multiple computers??
 
 
+- Remove use of ListIterator and AbstractList -- it's from java 1.2
+- Reorganize the launchViewer code between VncThumbnailViewer and VncViewersList (and AddHostDialog)
+
 + Listen for "Quit" event.
 	http://developer.apple.com/documentation/Java/Reference/1.4.2/appledoc/api/com/apple/eawt/ApplicationListener.html
 + Invoke a repaint when maximize button is clicked
@@ -18,7 +21,7 @@ To Do List:
 + Return a viewer to it's origianl location in main Frame's layout when soloHostClosed
 
 
-+ Load/Save lists of connection
++ Gracefully handle loading a (very) large list of hosts. (Perhpas a preference for max number or overflow into tabs in the main window.)
 
 
 + Remove use of VncViewer, instead create new class called VncViewerThumbnail (VncViewerTN)

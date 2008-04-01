@@ -231,6 +231,85 @@ public class DesCipher
 			clearText[i] ^= key[i];
 	}
 
+  private static String bytesToHexString(byte[] b) {
+    //store as string of hex numbers
+    String s = "";
+
+    for(int i = 0; i < 8; i++) {
+      // adjust for Java's "byte" which is a signed 8 bit
+      int val = b[i] & 0xFF;      
+      String c = Integer.toHexString(val);
+      if(c.length() != 2) {
+        c = "0" + c;
+      }
+      s += c;
+    }
+    
+    return s;
+  }
+
+
+  //
+  // encryptData
+  //     message - any length string
+  //     pw - any length string, uses only the first 8 characters
+  //     return - the DES encrypted message in a string of hex
+  public static String encryptData(String message, String pw) {
+    // Force the password to 8 characters
+    pw = (pw + "\0\0\0\0\0\0\0\0").substring(0,8);
+
+    DesCipher des = new DesCipher(pw.getBytes());
+
+    String encMsg = "";
+    // Encrypt message 8 characters at a time
+    for( String m = message; m.length() != 0; m = m.substring(8) ) {
+      // pad message substring with null if it's too short
+      for(int i = m.length(); i < 8; i++) {
+        m += '\0';
+      }
+      
+      byte[] e = new byte[8];
+      des.encrypt(m.substring(0,8).getBytes(), 0, e, 0);
+      
+      encMsg += bytesToHexString(e);
+    }
+
+    return encMsg;
+  }
+    
+  //
+  // decryptData
+  //     encMsg - any mult of 8 length string of the DES encrypted message in a string of hex
+  //     pw - any length string, uses only the first 8 characters
+  //     return - the decrypted message
+  public static String decryptData(String encMsg, String pw) {
+    if( (encMsg.length() % 8) != 0) {
+      // FIX-ME: Handle this better
+      System.out.println("Error decrypting data, length not multiple of 8");
+      return "";
+    }
+    
+    // Force the password to 8 characters
+    pw = (pw + "\0\0\0\0\0\0\0\0").substring(0,8);
+
+    DesCipher des = new DesCipher(pw.getBytes());
+
+    int len = encMsg.length() / 2;
+    byte[] msg = new byte[len];
+    for(int i = 0; i < len; i++) {
+      String hex = encMsg.substring(i*2, i*2+2);
+      Integer x = new Integer(Integer.parseInt(hex, 16));
+      msg[i] = x.byteValue();
+    }
+
+    // Decrypt message 8 characters at a time
+    for(int i = 0; i < len/8; i++) {
+      des.decrypt(msg, i*8, msg, i*8);
+    }
+
+    return new String(msg);
+  }
+  
     // The DES function.
     private void des( int[] inInts, int[] outInts, int[] keys )
 	{

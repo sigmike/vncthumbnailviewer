@@ -5,6 +5,7 @@ To Do List:
 
 
 - Remove use of ListIterator and AbstractList -- it's from java 1.2
+- Clean up the password & username strings in the unencrypted save file (contains many escaped null characters)
 - Reorganize the launchViewer code between VncThumbnailViewer and VncViewersList (and AddHostDialog)
 
 + Listen for "Quit" event.

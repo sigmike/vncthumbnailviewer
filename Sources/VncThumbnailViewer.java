@@ -176,7 +176,7 @@ public class VncThumbnailViewer extends Frame
     if(!v.rfb.closed()) {
       v.vc.enableInput(true);
     }
-    updateCanvasScaling(v, soloViewer.getWidth(), soloViewer.getHeight());
+    updateCanvasScaling(v, getWidthNoInsets(soloViewer), getHeightNoInsets(soloViewer));
   }
 
 
@@ -192,6 +192,7 @@ public class VncThumbnailViewer extends Frame
 
 
   private void updateCanvasScaling(VncViewer v, int maxWidth, int maxHeight) {
+    maxHeight -= v.buttonPanel.getHeight();
     int fbWidth = v.vc.rfb.framebufferWidth;
     int fbHeight = v.vc.rfb.framebufferHeight;
     int f1 = maxWidth * 100 / fbWidth;
@@ -214,8 +215,9 @@ public class VncThumbnailViewer extends Frame
 
 
   void resizeThumbnails() {
-    int newWidth = this.getWidth() / thumbnailRowCount;
-    int newHeight = (this.getHeight() - 16*thumbnailRowCount) / thumbnailRowCount; // 50*thumbnailRowCount
+    int newWidth = getWidthNoInsets(this) / thumbnailRowCount;
+    int newHeight = getHeightNoInsets(this) / thumbnailRowCount;
+ 
 
     if(newWidth != widthPerThumbnail || newHeight != heightPerThumbnail) {
       widthPerThumbnail = newWidth;
@@ -279,6 +281,20 @@ public class VncThumbnailViewer extends Frame
   }
 
 
+  static private int getWidthNoInsets(Frame frame) {
+    Insets insets = frame.getInsets();
+    int width = frame.getWidth() - (insets.left + insets.right);
+    return width;
+ }
+
+  static private int getHeightNoInsets(Frame frame) {
+    Insets insets = frame.getInsets();
+    int height = frame.getHeight() - (insets.top + insets.bottom);
+    return height;
+  }
+
+
+
   private Menu createFileMenu()
   {
     Menu fileMenu = new Menu("File");
@@ -335,7 +351,7 @@ public class VncThumbnailViewer extends Frame
     }
     else { // resize soloViewer
       VncViewer v = (VncViewer)soloViewer.getComponent(0);
-      updateCanvasScaling(v, soloViewer.getWidth(), soloViewer.getHeight());
+      updateCanvasScaling(v, getWidthNoInsets(soloViewer), getHeightNoInsets(soloViewer));
     }
 
   }

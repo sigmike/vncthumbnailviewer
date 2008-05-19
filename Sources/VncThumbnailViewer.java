@@ -107,13 +107,13 @@ public class VncThumbnailViewer extends Frame
 
     GridLayout grid = new GridLayout();
     setLayout(grid);
-    setSize(Toolkit.getDefaultToolkit().getScreenSize());
+    setSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize());
     setMenuBar(new MenuBar());
     getMenuBar().add( createFileMenu() );
     setVisible(true);
     
     soloViewer = new Frame();
-    soloViewer.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+    soloViewer.setSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize());
     soloViewer.addWindowListener(this);
     soloViewer.addComponentListener(this);
     soloViewer.validate();

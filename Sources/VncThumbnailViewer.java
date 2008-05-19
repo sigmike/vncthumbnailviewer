@@ -35,7 +35,10 @@ import java.net.*;
 
 public class VncThumbnailViewer extends Frame
     implements WindowListener, ComponentListener, ContainerListener, MouseListener, ActionListener  {
-  public static void main(String argv[])  {    VncThumbnailViewer t = new VncThumbnailViewer();
+
+  public static void main(String argv[])
+  {
+    VncThumbnailViewer t = new VncThumbnailViewer();
 
     String h = new String("");
     String pw = new String("");
@@ -90,7 +93,8 @@ public class VncThumbnailViewer extends Frame
   Frame soloViewer;
   int widthPerThumbnail, heightPerThumbnail;
   int thumbnailRowCount;
-  VncThumbnailViewer() {
+
+  VncThumbnailViewer() {
     viewersList = new VncViewersList(this);
     thumbnailRowCount = 0;
     widthPerThumbnail = 0;
@@ -104,7 +108,8 @@ public class VncThumbnailViewer extends Frame
     GridLayout grid = new GridLayout();
     setLayout(grid);
     setSize(Toolkit.getDefaultToolkit().getScreenSize());
-    setMenuBar(new MenuBar());    getMenuBar().add( createFileMenu() );
+    setMenuBar(new MenuBar());
+    getMenuBar().add( createFileMenu() );
     setVisible(true);
     
     soloViewer = new Frame();
@@ -274,7 +279,8 @@ public class VncThumbnailViewer extends Frame
   }
 
 
-  private Menu createFileMenu()  {
+  private Menu createFileMenu()
+  {
     Menu fileMenu = new Menu("File");
     newhostMenuItem = new MenuItem("Add New Host");
     loadhostsMenuItem = new MenuItem("Load List of Hosts");
@@ -286,14 +292,18 @@ public class VncThumbnailViewer extends Frame
     savehostsMenuItem.addActionListener(this);
     exitMenuItem.addActionListener(this);
     
-    fileMenu.add(newhostMenuItem);    fileMenu.addSeparator();
-    fileMenu.add(loadhostsMenuItem);    fileMenu.add(savehostsMenuItem);    fileMenu.addSeparator();
+    fileMenu.add(newhostMenuItem);
+    fileMenu.addSeparator();
+    fileMenu.add(loadhostsMenuItem);
+    fileMenu.add(savehostsMenuItem);
+    fileMenu.addSeparator();
     fileMenu.add(exitMenuItem);
     
     loadhostsMenuItem.enable(true);
     savehostsMenuItem.enable(true);
         
-    return fileMenu;  }
+    return fileMenu;
+  }
 
 
   // Window Listener Events:
@@ -330,7 +340,8 @@ public class VncThumbnailViewer extends Frame
 
   }
 
-  public void componentHidden(ComponentEvent  evt) {}  public void componentMoved(ComponentEvent evt) {}
+  public void componentHidden(ComponentEvent  evt) {}
+  public void componentMoved(ComponentEvent evt) {}
   public void componentShown(ComponentEvent evt) {}
 
 
@@ -344,7 +355,11 @@ public class VncThumbnailViewer extends Frame
     }
     
   }
-  public void mouseEntered(MouseEvent evt) {}  public void mouseExited(MouseEvent evt) {}  public void mousePressed(MouseEvent evt) {}  public void mouseReleased(MouseEvent evt) {}
+
+  public void mouseEntered(MouseEvent evt) {}
+  public void mouseExited(MouseEvent evt) {}
+  public void mousePressed(MouseEvent evt) {}
+  public void mouseReleased(MouseEvent evt) {}
 
 
   // Container Listener Events:

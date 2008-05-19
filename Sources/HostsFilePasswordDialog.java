@@ -1,6 +1,13 @@
-import java.awt.*;import java.awt.event.*;public class HostsFilePasswordDialog extends Dialog implements ActionListener {  private Button ok;  private Button cancel;
+import java.awt.*;
+import java.awt.event.*;
+
+public class HostsFilePasswordDialog extends Dialog implements ActionListener {
+
+  private Button ok;
+  private Button cancel;
   private TextField passField;
-  private String password;  private boolean result;
+  private String password;
+  private boolean result;
   
   public HostsFilePasswordDialog(Frame parent, boolean isSaving) {
     super(parent);
@@ -63,7 +70,10 @@ import java.awt.*;import java.awt.event.*;public class HostsFilePasswordDialo
     gridbag.setConstraints(ok, c);
     add(ok);
 
-    pack();    //setLocation(100, 200);    setVisible(true);  }
+    pack();
+    //setLocation(100, 200);
+    setVisible(true);
+  }
   
   public boolean getResult() {
     return result;
@@ -71,9 +81,17 @@ import java.awt.*;import java.awt.event.*;public class HostsFilePasswordDialo
   
   public String getPassword() {
     return password;
-  }    public void actionPerformed(ActionEvent evt) {    if(evt.getSource() == ok) {
+  }
+  
+  public void actionPerformed(ActionEvent evt) {
+    if(evt.getSource() == ok) {
       result = true;
     } else {
       result = false;
     }
-    password = passField.getText();    this.setVisible(false);    this.dispose();  }  }
+    password = passField.getText();
+    this.setVisible(false);
+    this.dispose();
+  }
+  
+}

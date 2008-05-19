@@ -48,7 +48,8 @@ class VncViewersList extends Vector {
     boolean encrypted = false;
     
     try {
-      File file = new File(filename);      URL url = file.toURL();
+      File file = new File(filename);
+      URL url = file.toURL();
       filename = url.getPath();
             
       IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -63,17 +64,20 @@ class VncViewersList extends Vector {
         }
       }
 
-    } catch (Exception e) {      System.out.println("Error testing file for encryption.");
+    } catch (Exception e) {
+      System.out.println("Error testing file for encryption.");
       System.out.println(e.getMessage());
     }
     
     return encrypted;
-    // this returns false even if there is a problem reading the file  }
+    // this returns false even if there is a problem reading the file
+  }
 
 
   public void loadHosts(String filename, String encPassword) {
     try {
-      File file = new File(filename);      URL url = file.toURL();
+      File file = new File(filename);
+      URL url = file.toURL();
       filename = url.getPath();
 
       IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -100,15 +104,18 @@ class VncViewersList extends Vector {
           }
           else {
             System.out.println("Load: Ignoring " + e.getFullName());
-          }        }
+          }
+        }
         
       } else {
         System.out.println("Malformed file, missing manifest tag.");
         System.out.println("Found " + root.getFullName());
       }
 
-    } catch (Exception e) {      System.out.println("Error loading file.\n" + e.getMessage() );
-    }  }
+    } catch (Exception e) {
+      System.out.println("Error loading file.\n" + e.getMessage() );
+    }
+  }
 
 
   private boolean parseConnection(IXMLElement e, boolean isEncrypted, String encPass) {
@@ -261,7 +268,8 @@ class VncViewersList extends Vector {
     try {
       PrintWriter o = new PrintWriter( new FileOutputStream(filename) );
       XMLWriter writer = new XMLWriter(o);
-      o.println("<?xml version=\"1.0\" standalone=\"yes\"?>");      writer.write(manifest, true);
+      o.println("<?xml version=\"1.0\" standalone=\"yes\"?>");
+      writer.write(manifest, true);
       
     } catch (IOException e) {
       System.out.print("Error saving file.\n" + e.getMessage() );

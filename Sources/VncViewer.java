@@ -146,6 +146,7 @@ public class VncViewer extends java.applet.Applet
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridwidth = GridBagConstraints.REMAINDER;
     gbc.anchor = GridBagConstraints.NORTHWEST;
+    gbc.fill = GridBagConstraints.BOTH; // AS & DJC
 
     if (showControls) {
       buttonPanel = new ButtonPanel(this);

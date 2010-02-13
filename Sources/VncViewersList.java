@@ -334,6 +334,7 @@ class VncViewersList extends Vector {
     v.options.autoScale = true; // false, because ThumbnailViewer maintains the scaling
     v.options.scalingFactor = 10;
     v.addContainerListener(tnviewer);
+    v.tnViewer = tnviewer;
     v.start();
     
     return v;

@@ -66,6 +66,7 @@ public class VncViewer extends java.applet.Applet
   OptionsFrame options;
   ClipboardFrame clipboard;
   RecordingFrame rec;
+  VncThumbnailViewer tnViewer;
 
   // Control session recording.
   Object recordingSync;

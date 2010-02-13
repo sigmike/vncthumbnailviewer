@@ -34,6 +34,7 @@ class ButtonPanel extends Panel implements ActionListener {
   Button optionsButton;
   Button recordButton;
   Button activateButton;
+  Button soloButton;
   Button ctrlAltDelButton;
   Button refreshButton;
 
@@ -45,13 +46,18 @@ class ButtonPanel extends Panel implements ActionListener {
     disconnectButton.setEnabled(false);
     add(disconnectButton);
     disconnectButton.addActionListener(this);
-    optionsButton = new Button("Options");
-    add(optionsButton);
-    optionsButton.addActionListener(this);
     activateButton = new Button("Activate");
     activateButton.setEnabled(false);
     add(activateButton);
     activateButton.addActionListener(this);
+    
+    soloButton = new Button("Solo");
+    add(soloButton);
+    soloButton.addActionListener(this);
+    
+    optionsButton = new Button("Options");
+    add(optionsButton);
+    optionsButton.addActionListener(this);
     /*
     if (viewer.rec != null) {
       recordButton = new Button("Record");
@@ -131,6 +137,10 @@ class ButtonPanel extends Panel implements ActionListener {
       else
         activateButton.setLabel("Activate");
       validate();
+      
+    } else if (evt.getSource() == soloButton) {
+      activateButton.setLabel("Activate");
+      viewer.tnViewer.soloHost(viewer);
     } else if (evt.getSource() == ctrlAltDelButton) {
       try {
         final int modifiers = InputEvent.CTRL_MASK | InputEvent.ALT_MASK;

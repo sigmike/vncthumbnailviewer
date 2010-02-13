@@ -35,6 +35,7 @@ class ButtonPanel extends Panel implements ActionListener {
   Button recordButton;
   Button activateButton;
   Button soloButton;
+  Button removeButton;
   Button ctrlAltDelButton;
   Button refreshButton;
 
@@ -42,14 +43,20 @@ class ButtonPanel extends Panel implements ActionListener {
     viewer = v;
 
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    
     disconnectButton = new Button("Disconnect");
     disconnectButton.setEnabled(false);
-    add(disconnectButton);
-    disconnectButton.addActionListener(this);
+    //add(disconnectButton);
+    //disconnectButton.addActionListener(this);
+    
     activateButton = new Button("Activate");
     activateButton.setEnabled(false);
     add(activateButton);
     activateButton.addActionListener(this);
+    
+    removeButton = new Button("Remove");
+    add(removeButton);
+    removeButton.addActionListener(this);
     
     soloButton = new Button("Solo");
     add(soloButton);
@@ -141,6 +148,10 @@ class ButtonPanel extends Panel implements ActionListener {
     } else if (evt.getSource() == soloButton) {
       activateButton.setLabel("Activate");
       viewer.tnViewer.soloHost(viewer);
+
+    } else if (evt.getSource() == removeButton) {
+      viewer.tnViewer.removeViewer(viewer);
+      
     } else if (evt.getSource() == ctrlAltDelButton) {
       try {
         final int modifiers = InputEvent.CTRL_MASK | InputEvent.ALT_MASK;

@@ -38,11 +38,15 @@ class ButtonPanel extends Panel implements ActionListener {
   Button removeButton;
   Button ctrlAltDelButton;
   Button refreshButton;
+  Label hostLabel;
 
   ButtonPanel(VncViewer v) {
     viewer = v;
 
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    
+    hostLabel = new Label(v.host);
+    add(hostLabel);
     
     disconnectButton = new Button("Disconnect");
     disconnectButton.setEnabled(false);

@@ -33,7 +33,7 @@ class ButtonPanel extends Panel implements ActionListener {
   Button disconnectButton;
   Button optionsButton;
   Button recordButton;
-  Button clipboardButton;
+  Button activateButton;
   Button ctrlAltDelButton;
   Button refreshButton;
 
@@ -48,16 +48,18 @@ class ButtonPanel extends Panel implements ActionListener {
     optionsButton = new Button("Options");
     add(optionsButton);
     optionsButton.addActionListener(this);
-    clipboardButton = new Button("Clipboard");
-    clipboardButton.setEnabled(false);
-    add(clipboardButton);
-    clipboardButton.addActionListener(this);
+    activateButton = new Button("Activate");
+    activateButton.setEnabled(false);
+    add(activateButton);
+    activateButton.addActionListener(this);
+    /*
     if (viewer.rec != null) {
       recordButton = new Button("Record");
       add(recordButton);
       recordButton.addActionListener(this);
     }
-    ctrlAltDelButton = new Button("Send Ctrl-Alt-Del");
+    */
+    ctrlAltDelButton = new Button("Ctrl-Alt-Del");
     ctrlAltDelButton.setEnabled(false);
     add(ctrlAltDelButton);
     ctrlAltDelButton.addActionListener(this);
@@ -73,7 +75,7 @@ class ButtonPanel extends Panel implements ActionListener {
 
   public void enableButtons() {
     disconnectButton.setEnabled(true);
-    clipboardButton.setEnabled(true);
+    activateButton.setEnabled(true);
     refreshButton.setEnabled(true);
   }
 
@@ -89,7 +91,7 @@ class ButtonPanel extends Panel implements ActionListener {
     disconnectButton.addActionListener(this);
 
     optionsButton.setEnabled(false);
-    clipboardButton.setEnabled(false);
+    activateButton.setEnabled(false);
     ctrlAltDelButton.setEnabled(false);
     refreshButton.setEnabled(false);
 
@@ -122,9 +124,13 @@ class ButtonPanel extends Panel implements ActionListener {
     } else if (evt.getSource() == recordButton) {
       viewer.rec.setVisible(!viewer.rec.isVisible());
 
-    } else if (evt.getSource() == clipboardButton) {
-      viewer.clipboard.setVisible(!viewer.clipboard.isVisible());
-
+    } else if (evt.getSource() == activateButton) {
+      viewer.vc.enableInput(!viewer.vc.inputEnabled);
+      if (viewer.vc.inputEnabled)
+        activateButton.setLabel("Deactivate");
+      else
+        activateButton.setLabel("Activate");
+      validate();
     } else if (evt.getSource() == ctrlAltDelButton) {
       try {
         final int modifiers = InputEvent.CTRL_MASK | InputEvent.ALT_MASK;

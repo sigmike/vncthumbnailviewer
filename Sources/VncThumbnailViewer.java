@@ -363,13 +363,14 @@ public class VncThumbnailViewer extends Frame
 
   // Mouse Listener Events:
   public void mouseClicked(MouseEvent evt) {
+    /*
     if(evt.getClickCount() == 2) {
       Component c = evt.getComponent();
       if(c instanceof VncCanvas) {
         soloHost( ((VncCanvas)c).viewer );
       }
     }
-    
+    */
   }
 
   public void mouseEntered(MouseEvent evt) {}
